@@ -9,25 +9,16 @@ dotenv.config();
 
 const app = express();
 
+// MongoDB connection
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/soup-store';
+mongoose.connect(mongoURI)
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.error('MongoDB connection error:', err));
+
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/products', productRoutes);
-
-const connectDB = async () => {
-    try {
-        await mongoose.connect(process.env.MONGODB_URI as string, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log('MongoDB connected');
-    } catch (error) {
-        console.error('MongoDB connection error:', error);
-        process.exit(1);
-    }
-};
-
-connectDB();
 
 export default app;
